@@ -1,31 +1,50 @@
 <script>
-  import { each, space } from "svelte/internal";
+  let totalPdt = 0;
+  let totalPurchases = 0;
 
-  let list = [
-    { name: "Apple", qty: 2, price: 2.99 },
-    { name: "Banana", qty: 5, price: 1.99 },
-    { name: "Orange", qty: 3, price: 0.69 },
-    { name: "Tea", qty: 1, price: 4.99 },
-  ];
+  let list = [];
+
+  function addPdt() {
+    const name = document.getElementById("namePdt").value;
+    const qty = document.getElementById("qtyPdt").value;
+    const price = document.getElementById("pricePdt").value;
+
+    totalPdt = qty * price;
+    totalPurchases += totalPdt;
+
+    list = [
+      ...list,
+      {
+        name: name,
+        qty: qty,
+        price: price,
+        total: totalPdt,
+      },
+    ];
+  }
 </script>
 
 <main>
   <h1>Shopping list</h1>
-  <input type="text" name="" id="" placeholder="Product's name" />
-  <input type="number" name="" id="" value="1" />
+  <input type="text" name="" id="namePdt" placeholder="Product's name" />
+  <input type="number" name="" id="qtyPdt" value="1" />
   <span>US$</span>
-  <input type="number" name="" id="" value="0.99" />
-  <button>Adicionar</button>
+  <input type="number" name="" id="pricePdt" value="0.99" />
+  <button on:click={addPdt}>Adicionar</button>
+
   <ul class="shopping-list">
-    {#each list as item, i}
+    {#each list as item}
       <li>
         <input type="checkbox" />
         <span>{item.qty}</span>
         <span>{item.name}</span>
-        <span>{item.price}</span>
+        <span>US$ {item.price}</span>
+        <span>US$ {item.total}</span>
         <button>Delete</button>
       </li>
     {/each}
+    <div>Total purchases:</div>
+    <span>US$ {totalPurchases.toFixed(2)}</span>
   </ul>
 </main>
 
