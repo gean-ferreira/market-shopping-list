@@ -4,61 +4,88 @@
 
   let list = [];
 
-  function addPdt() {
-    const name = document.getElementById("namePdt").value;
-    const qty = document.getElementById("qtyPdt").value;
-    const price = document.getElementById("pricePdt").value;
+  $: outstandingProducts = list.filter((item) => !item.bought).length;
 
-    totalPdt = qty * price;
+  let name = null;
+  let qty = null;
+  let price = null;
+  function addPdt() {
+    totalPdt = qty.value * price.value;
     totalPurchases += totalPdt;
 
     list = [
       ...list,
       {
-        name: name,
-        qty: qty,
-        price: price,
+        bought: false,
+        name: name.value,
+        qty: qty.value,
+        price: price.value,
         total: totalPdt,
       },
     ];
+
+    name.value = "";
+    qty.value = 1;
+    price.value = "";
   }
 
   function deletePdt(item) {
     list = list.filter((i) => i !== item);
+    totalPurchases -= item.total;
   }
 </script>
 
 <main>
   <h1>Shopping list</h1>
-  <input type="text" name="" id="namePdt" placeholder="Product's name" />
-  <input type="number" name="" id="qtyPdt" value="1" />
-  <span>US$</span>
-  <input type="number" name="" id="pricePdt" value="0.99" />
-  <button on:click={addPdt}>Adicionar</button>
+
+  <form on:submit|preventDefault={addPdt}>
+    <input
+      type="text"
+      minlength="2"
+      bind:this={name}
+      placeholder="Product's name"
+    />
+    <input type="number" bind:this={qty} value="1" min="1" />
+    <input
+      type="number"
+      step="any"
+      min="0.01"
+      placeholder="US$0.99"
+      bind:this={price}
+    />
+    <button type="submit">Adicionar</button>
+  </form>
 
   {#if list.length === 0}
     <div>The list is empty. There are no products in the cart.</div>
   {:else}
-    <ul class="shopping-list">
-      {#each list as item, i}
-        <li>
-          <input type="checkbox" />
-          <span>{item.qty}</span>
-          <span>{item.name}</span>
-          <span>US$ {item.price}</span>
-          <span>US$ {item.total}</span>
-          <button on:click={deletePdt(item)}>Delete</button>
-        </li>
-      {/each}
-      <div>Total purchases:</div>
-      <span>US$ {totalPurchases.toFixed(2)}</span>
-    </ul>
+    <table class="tableList">
+      <thead>
+        <tr>
+          <th />
+          <th>Qty</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+        {#each list as item, i}
+          <tr>
+            <td> <input type="checkbox" bind:checked={item.bought} /></td>
+            <td> <span>{item.qty}</span></td>
+            <td> <span>{item.name}</span></td>
+            <td> <span>US$ {item.price}</span></td>
+            <td> <span>US$ {item.total.toFixed(2)}</span></td>
+            <td> <button on:click={deletePdt(item)}>Delete</button></td>
+          </tr>
+        {/each}
+      </thead>
+    </table>
   {/if}
+
+  <div>Outstanding products: {outstandingProducts}</div>
+  <div>Total purchases:</div>
+  <span>US$ {totalPurchases.toFixed(2)}</span>
 </main>
 
 <style>
-  .shopping-list {
-    padding: 0px;
-    list-style-type: none;
-  }
 </style>
