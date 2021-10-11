@@ -22,6 +22,10 @@
       },
     ];
   }
+
+  function deletePdt(item) {
+    list = list.filter((i) => i !== item);
+  }
 </script>
 
 <main>
@@ -32,20 +36,24 @@
   <input type="number" name="" id="pricePdt" value="0.99" />
   <button on:click={addPdt}>Adicionar</button>
 
-  <ul class="shopping-list">
-    {#each list as item}
-      <li>
-        <input type="checkbox" />
-        <span>{item.qty}</span>
-        <span>{item.name}</span>
-        <span>US$ {item.price}</span>
-        <span>US$ {item.total}</span>
-        <button>Delete</button>
-      </li>
-    {/each}
-    <div>Total purchases:</div>
-    <span>US$ {totalPurchases.toFixed(2)}</span>
-  </ul>
+  {#if list.length === 0}
+    <div>The list is empty. There are no products in the cart.</div>
+  {:else}
+    <ul class="shopping-list">
+      {#each list as item, i}
+        <li>
+          <input type="checkbox" />
+          <span>{item.qty}</span>
+          <span>{item.name}</span>
+          <span>US$ {item.price}</span>
+          <span>US$ {item.total}</span>
+          <button on:click={deletePdt(item)}>Delete</button>
+        </li>
+      {/each}
+      <div>Total purchases:</div>
+      <span>US$ {totalPurchases.toFixed(2)}</span>
+    </ul>
+  {/if}
 </main>
 
 <style>
