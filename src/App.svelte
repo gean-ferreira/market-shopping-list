@@ -1,4 +1,7 @@
 <script>
+  import ShoppingList from "./ShoppingList.svelte";
+  import { Button, Table, Form, FormGroup, Label, Input } from "sveltestrap";
+
   let totalPdt = 0;
   let totalPurchases = 0;
 
@@ -6,27 +9,28 @@
 
   $: outstandingProducts = list.filter((item) => !item.bought).length;
 
-  let name = null;
-  let qty = null;
-  let price = null;
+  let name;
+  let qty;
+  let price;
   function addPdt() {
-    totalPdt = qty.value * price.value;
+    console.log("nome: " + name);
+    totalPdt = qty * price;
     totalPurchases += totalPdt;
 
     list = [
       ...list,
       {
         bought: false,
-        name: name.value,
-        qty: qty.value,
-        price: price.value,
+        name: name,
+        qty: qty,
+        price: price,
         total: totalPdt,
       },
     ];
 
-    name.value = "";
-    qty.value = 1;
-    price.value = "";
+    name = "";
+    qty = null;
+    price = "";
   }
 
   function deletePdt(item) {
@@ -35,51 +39,63 @@
   }
 </script>
 
-<main>
+<main on:submit|preventDefault={addPdt}>
   <h1>Shopping list</h1>
 
-  <form on:submit|preventDefault={addPdt}>
-    <input
-      type="text"
-      minlength="2"
-      bind:this={name}
-      placeholder="Product's name"
-    />
-    <input type="number" bind:this={qty} value="1" min="1" />
-    <input
-      type="number"
-      step="any"
-      min="0.01"
-      placeholder="US$0.99"
-      bind:this={price}
-    />
-    <button type="submit">Adicionar</button>
-  </form>
+  <Form>
+    <FormGroup>
+      <Label>Name:</Label>
+      <Input
+        type="text"
+        minlength="2"
+        bind:value={name}
+        placeholder="Product's name"
+      />
+    </FormGroup>
+    <FormGroup>
+      <Label>Quantity:</Label>
+      <Input type="number" bind:value={qty} placeholder="1" min="1" />
+    </FormGroup>
+    <FormGroup>
+      <Label>Price:</Label>
+      <Input
+        type="number"
+        step="any"
+        min="0.01"
+        placeholder="US$0.99"
+        bind:value={price}
+      />
+    </FormGroup>
+    <Button color="primary" type="submit">Add</Button>
+  </Form>
 
   {#if list.length === 0}
-    <div>The list is empty. There are no products in the cart.</div>
+    <div class="emptyList">
+      The list is empty. There are no products in the cart.
+    </div>
   {:else}
-    <table class="tableList">
+    <Table class="tableList">
       <thead>
         <tr>
           <th />
           <th>Qty</th>
           <th>Name</th>
-          <th>Price</th>
+          <th>US$</th>
           <th>Total</th>
+          <th />
         </tr>
         {#each list as item, i}
-          <tr>
-            <td> <input type="checkbox" bind:checked={item.bought} /></td>
-            <td> <span>{item.qty}</span></td>
-            <td> <span>{item.name}</span></td>
-            <td> <span>US$ {item.price}</span></td>
-            <td> <span>US$ {item.total.toFixed(2)}</span></td>
-            <td> <button on:click={deletePdt(item)}>Delete</button></td>
-          </tr>
+          <ShoppingList
+            bind:bought={item.bought}
+            bind:qty={item.qty}
+            bind:name={item.name}
+            bind:price={item.price}
+            bind:total={item.total}
+            on:deletePdt={() => deletePdt(item)}
+          />
         {/each}
       </thead>
-    </table>
+    </Table>
   {/if}
 
   <div>Outstanding products: {outstandingProducts}</div>
@@ -88,4 +104,12 @@
 </main>
 
 <style>
+  main {
+    margin: 0 5px;
+  }
+  h1,
+  .emptyList {
+    text-align: center;
+    margin: 16px 0;
+  }
 </style>
