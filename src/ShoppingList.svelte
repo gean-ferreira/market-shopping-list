@@ -17,17 +17,22 @@
   <td><span>{name}</span></td>
   <td><span>{price}</span></td>
   <td><span>{total}</span></td>
+  <td><button class="editBtn"><Icon name="three-dots-vertical" /></button></td>
   <td
-    ><button class="trash" on:click={() => dispatch("deletePdt")}
+    ><button class="trashBtn" on:click={() => dispatch("deletePdt")}
       ><Icon name="trash-fill" /></button
     ></td
   >
 </tr>
 
 <style>
-  .trash {
-    padding: 0.2rem;
+  .trashBtn,
+  .editBtn {
+    padding: 0;
     border: none;
     background-color: white;
+  }
+  td {
+    padding: 2px;
   }
 </style>

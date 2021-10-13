@@ -26,8 +26,8 @@
         bought: false,
         name: name,
         qty: qty,
-        price: price,
-        total: totalPdt,
+        price: price.toFixed(2),
+        total: totalPdt.toFixed(2),
       },
     ];
 
@@ -108,11 +108,14 @@
 
 <style>
   main {
-    margin: 0 5px;
+    margin: 0 8px;
   }
   h1,
   .emptyList {
     text-align: center;
     margin: 16px 0;
+  }
+  th {
+    padding: 2px;
   }
 </style>
