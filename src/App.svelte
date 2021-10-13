@@ -4,14 +4,17 @@
 
   let totalPdt = 0;
   let totalPurchases = 0;
+  let list = JSON.parse(localStorage.getItem("shopping-list")) ?? [];
+  let name;
+  let qty = 1;
+  let price;
 
-  let list = [];
+  $: {
+    localStorage.setItem("shopping-list", JSON.stringify(list));
+  }
 
   $: outstandingProducts = list.filter((item) => !item.bought).length;
 
-  let name;
-  let qty;
-  let price;
   function addPdt() {
     console.log("nome: " + name);
     totalPdt = qty * price;
@@ -29,7 +32,7 @@
     ];
 
     name = "";
-    qty = null;
+    qty = 1;
     price = "";
   }
 
