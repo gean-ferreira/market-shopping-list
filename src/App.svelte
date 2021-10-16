@@ -2,23 +2,29 @@
   import ShoppingList from "./ShoppingList.svelte";
   import { Button, Table, Form, FormGroup, Label, Input } from "sveltestrap";
 
-  let totalPdt = 0;
-  let totalPurchases = 0;
+  let name,
+    qty = 1,
+    price;
+  let totalPdt = 0,
+    totalPurchases = 0;
   let list = JSON.parse(localStorage.getItem("shopping-list")) ?? [];
-  let name;
-  let qty = 1;
-  let price;
 
   $: {
     localStorage.setItem("shopping-list", JSON.stringify(list));
   }
 
-  $: outstandingProducts = list.filter((item) => !item.bought).length;
+  $: outstandingProducts = list.filter((pdt) => !pdt.bought).length;
+
+  $: totalPurchases = list.reduce((amount, pdt) => {
+    if (pdt.bought) {
+      return amount + parseFloat(pdt.total);
+    } else {
+      return amount;
+    }
+  }, 0);
 
   function addPdt() {
-    console.log("nome: " + name);
     totalPdt = qty * price;
-    totalPurchases += totalPdt;
 
     list = [
       ...list,
@@ -102,7 +108,7 @@
   {/if}
 
   <div>Outstanding products: {outstandingProducts}</div>
-  <div>Total purchases:</div>
+  <span>Total purchases:</span>
   <span>US$ {totalPurchases.toFixed(2)}</span>
 </main>
 

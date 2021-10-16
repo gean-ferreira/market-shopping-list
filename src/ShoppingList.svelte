@@ -4,11 +4,7 @@
 
   const dispatch = createEventDispatcher();
 
-  export let bought;
-  export let qty;
-  export let name;
-  export let price;
-  export let total;
+  export let bought, qty, name, price, total;
 </script>
 
 <tr>
@@ -17,7 +13,6 @@
   <td><span>{name}</span></td>
   <td><span>{price}</span></td>
   <td><span>{total}</span></td>
-  <td><button class="editBtn"><Icon name="three-dots-vertical" /></button></td>
   <td
     ><button class="trashBtn" on:click={() => dispatch("deletePdt")}
       ><Icon name="trash-fill" /></button
@@ -26,8 +21,7 @@
 </tr>
 
 <style>
-  .trashBtn,
-  .editBtn {
+  .trashBtn {
     padding: 0;
     border: none;
     background-color: white;
